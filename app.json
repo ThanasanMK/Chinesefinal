@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Chinese Learning ",
+    "slug": "chinese-vocab",
+    "scheme": "chinesevocab",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./image/Logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "supabaseUrl": "https://jfwgrwgyvwkfqgzhqwuu.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impmd2dyd2d5dndrZnFnemhxd3V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1MjM5MDksImV4cCI6MjA3NDA5OTkwOX0.bqyBNEl67IHoDF1Kvt3n1K2MUuNsccXNEHi6NiEdmic"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
