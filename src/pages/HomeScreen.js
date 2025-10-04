@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { 
-  View, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, 
-  ActivityIndicator, FlatList, ImageBackground 
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import {
+  View, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar,
+  ActivityIndicator, FlatList, ImageBackground
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -19,11 +19,7 @@ export default function HomeScreen({ navigation }) {
     try {
       setLoading(true);
       const data = await listWords({});
-      if (Array.isArray(data) && data.length > 0) {
-        setWords([...data].reverse());
-      } else {
-        setWords([]);
-      }
+      setWords(Array.isArray(data) ? [...data].reverse() : []);
     } catch (e) {
       console.log('Load words error:', e?.message);
       setWords([]);
@@ -32,40 +28,52 @@ export default function HomeScreen({ navigation }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (isFocused) loadWords();
-  }, [isFocused, loadWords]);
+  useEffect(() => { if (isFocused) loadWords(); }, [isFocused, loadWords]);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.pill}>
-      <Text style={styles.pillText}>
-        {[
-          item?.hanzi,
-          item?.pinyin ? `(${item.pinyin})` : null,
-          '–',
-          item?.meaning_th || item?.meaning
-        ].filter(Boolean).join(' ')}
-      </Text>
-    </View>
+  const renderItem = useMemo(
+    () => ({ item }) => (
+      <View style={styles.pill}>
+        <Text style={styles.pillText}>
+          {[
+            item?.hanzi,
+            item?.pinyin ? `(${item.pinyin})` : null,
+            '–',
+            item?.meaning_th || item?.meaning
+          ].filter(Boolean).join(' ')}
+        </Text>
+      </View>
+    ),
+    []
   );
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" />
       <ImageBackground
-        source={require('../../image/backgrod.png')}   // 👈 เปลี่ยนเป็น path ของรูปคุณ
+        // 🔁 เปลี่ยนเป็นรูปของคุณเองในโฟลเดอร์ image/
+        source={require('../../image/backgrod.png')}
         style={styles.bg}
         resizeMode="cover"
       >
-        <View style={styles.container}>
+        {/* overlay โปร่งใส อยู่ใต้คอนเทนต์ และไม่กันการกด */}
+        <View pointerEvents="none" style={styles.overlay} />
 
+        <View style={styles.container}>
           {/* ===== Header ===== */}
           <View style={styles.header}>
             <View style={styles.headerIcons}>
-              <TouchableOpacity style={styles.iconBell} onPress={() => {}} hitSlop={{ top:10, bottom:10, left:10, right:10 }}>
+              <TouchableOpacity
+                style={styles.iconBell}
+                onPress={() => navigation.navigate('Notifications')}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
                 <Icon name="bell-ring-outline" size={22} color="#000" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconLogout} onPress={signOut} hitSlop={{ top:10, bottom:10, left:10, right:10 }}>
+              <TouchableOpacity
+                style={styles.iconLogout}
+                onPress={signOut}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
                 <Icon name="logout" size={20} color="#fff" />
               </TouchableOpacity>
             </View>
@@ -86,7 +94,7 @@ export default function HomeScreen({ navigation }) {
             ) : words.length > 0 ? (
               <FlatList
                 data={words}
-                keyExtractor={(item, idx) => String(item?._id ?? idx)}
+                keyExtractor={(item, idx) => String(item?.id ?? item?._id ?? idx)}
                 renderItem={renderItem}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 contentContainerStyle={{ paddingVertical: 8 }}
@@ -107,7 +115,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity
               style={styles.tabItem}
               onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}
-              hitSlop={{ top:10, bottom:10, left:10, right:10 }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Icon name="home-variant" size={26} color="#9a5200" />
               <Text style={styles.tabLabel}>Home</Text>
@@ -116,7 +124,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity
               style={styles.tabItem}
               onPress={() => navigation.navigate('Chat')}
-              hitSlop={{ top:10, bottom:10, left:10, right:10 }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Icon name="chat-processing" size={26} color="#0b6b79" />
               <Text style={styles.tabLabel}>Chat</Text>
@@ -125,7 +133,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity
               style={styles.tabItem}
               onPress={() => navigation.navigate('Words')}
-              hitSlop={{ top:10, bottom:10, left:10, right:10 }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Icon name="plus-circle" size={26} color="#0a49ff" />
               <Text style={styles.tabLabel}>Edit</Text>
@@ -137,16 +145,21 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
-const BG = '#FFF7E3';
-const HEADER = '#F9F1DD';
 const TAB_YELLOW = '#FFD24D';
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: BG },
+  safe: { flex: 1 },
   bg: { flex: 1, width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(255,255,255,0.8)' }, // 👈 ใส่ overlay โปร่งใส
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.75)',
+  },
+
+  container: { flex: 1 },
+
   header: {
-    backgroundColor: HEADER,
+    backgroundColor: 'rgba(255,255,255,0.86)',
     paddingHorizontal: 22,
     paddingTop: 12,
     paddingBottom: 24,
@@ -172,6 +185,7 @@ const styles = StyleSheet.create({
   h1: { fontSize: 34, lineHeight: 40, fontWeight: '800', color: '#000' },
   sub: { fontSize: 16, color: '#333', marginTop: 8 },
   email: { fontSize: 16, color: '#333' },
+
   card: {
     backgroundColor: '#fff',
     marginTop: 24,
@@ -193,6 +207,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   pillText: { textAlign: 'center', fontSize: 15, color: '#000' },
+
   tab: {
     position: 'absolute',
     left: 16, right: 16, bottom: 14,

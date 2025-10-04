@@ -1,14 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  FlatList,
-  TextInput as RNTextInput,
-  TouchableOpacity
-} from 'react-native';
+import { View,StyleSheet,SafeAreaView,KeyboardAvoidingView,Platform,FlatList,TextInput as RNTextInput,TouchableOpacity} from 'react-native';
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 

@@ -5,12 +5,13 @@ import { useAuth } from '../AuthContext';
 
 import LoginPage from '../pages/LoginPage';
 import RegisterScreen from '../pages/RegisterScreen';
-import ResetPasswordScreen from '../pages/ResetPasswordScreen'; // 👈 เพิ่มเข้ามา
+import ResetPasswordScreen from '../pages/ResetPasswordScreen';
 import HomeScreen from '../pages/HomeScreen';
 import WordListScreen from '../pages/WordListScreen';
 import WordFormScreen from '../pages/WordFormScreen';
 import ImageUploadScreen from '../pages/ImageUploadScreen';
 import ChatScreen from '../pages/ChatScreen';
+import NotificationsScreen from '../pages/NotificationsScreen'; //  เพิ่มหน้าแจ้งเตือน
 
 const Stack = createNativeStackNavigator();
 
@@ -19,22 +20,20 @@ function AuthStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Login" component={LoginPage} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} /> 
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 }
 
 function AppStack() {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{ headerShown: false }}
-    >
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="Words" component={WordListScreen} />
       <Stack.Screen name="WordForm" component={WordFormScreen} />
       <Stack.Screen name="ImageUpload" component={ImageUploadScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} /> 
     </Stack.Navigator>
   );
 }
